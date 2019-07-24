@@ -2,10 +2,11 @@ import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { KodiHostStructure } from '@wako-app/mobile-sdk';
 import { logData } from './tools';
+import { Platform } from '@ionic/angular';
 
 @Injectable()
 export class TestHostService {
-  constructor(private storage: Storage) {
+  constructor(private storage: Storage, private platform: Platform) {
     this.test();
   }
 
@@ -22,18 +23,23 @@ export class TestHostService {
   }
 
   getHosts(): Promise<KodiHostStructure[]> {
-    return this.storage.get('kodi_hosts').then(hosts => {
-      return hosts || [];
-    });
+    return this.platform.ready().then(() => {
+      return this.storage.get('kodi_hosts').then(hosts => {
+        return hosts || [];
+      });
+    })
   }
 
   getCurrentHost(): Promise<KodiHostStructure> {
-    return this.storage.get('kodi_current_host').then(host => {
-      if (host && (!host.name || host.name === '')) {
-        host.name = 'Kodi Host ' + host.host;
-      }
-      return host;
-    });
+    return this.platform.ready().then(() => {
+      return this.storage.get('kodi_current_host').then(host => {
+        if (host && (!host.name || host.name === '')) {
+          host.name = 'Kodi Host ' + host.host;
+        }
+        return host;
+      });
+    })
+
   }
 
   setCurrentHost(host: KodiHostStructure): Promise<KodiHostStructure> {
