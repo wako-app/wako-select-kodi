@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { MovieDetailBaseComponent, KodiHostStructure } from '@wako-app/mobile-sdk';
+import { MovieDetailBaseComponent, KodiHostStructure, KodiAppService } from '@wako-app/mobile-sdk';
 import { TestHostService } from '../services/kodi.host.service';
 import { AlertController } from '@ionic/angular';
 
@@ -23,7 +23,23 @@ export class MovieButtonComponent extends MovieDetailBaseComponent {
   }
 
   async onChange() {
-    await this.kodi.setCurrentHost(this.host);
+    const oldHost = KodiAppService.currentHost
+
+    KodiAppService.currentHost = this.host;
+    const observe = KodiAppService.checkAndConnectToCurrentHost()
+    const success = await observe.toPromise()
+    if(!success) {
+      KodiAppService.currentHost = oldHost;
+      this.host = this.hosts.find((h) => h.host === oldHost.host);
+      const alert = await this.alertController.create({
+        header: 'Connection Failed',
+        message: 'Unable to connect to Kodi Host',
+      });
+      await alert.present()
+    } else {
+      await this.kodi.setCurrentHost(this.host);
+      KodiAppService.connect();
+    }
   }
 
   setMovie(): any {}
