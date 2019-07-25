@@ -5,7 +5,7 @@
   "name": "Kodi Select",
   "description": "Allows to select Kodi Host before starting an episode/a movie",
   "author": "JohnnyCrazy",
-  "actions": ["movies", "episodes"],
+  "actions": [],
   "entryPoint": "/plugin.js",
   "languages": {
     "en": "/i18n/en.json",

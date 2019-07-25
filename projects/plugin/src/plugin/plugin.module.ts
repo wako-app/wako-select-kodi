@@ -24,7 +24,7 @@ const components = [MovieButtonComponent, EpisodeButtonComponent, SettingsCompon
 export class PluginModule extends PluginBaseModule {
   static pluginService = PluginService;
   // static settingsComponent = SettingsComponent;
-  static movieComponent = MovieButtonComponent;
-  static episodeComponent = EpisodeButtonComponent;
+  // static movieComponent = MovieButtonComponent;
+  // static episodeComponent = EpisodeButtonComponent;
   // static pluginDetailComponent = PluginDetailComponent;
 }
