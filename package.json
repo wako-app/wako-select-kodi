@@ -31,7 +31,7 @@
     "@ionic/angular": "^4.7.1",
     "@ionic/storage": "^2.2.0",
     "@ngx-translate/core": "^11.0.1",
-    "@wako-app/mobile-sdk": "^1.1.1-beta-angular8",
+    "@wako-app/mobile-sdk": "^2.0.0",
     "concurrently": "^4.1.1",
     "core-js": "^2.5.4",
     "prettier": "^1.18.2",
