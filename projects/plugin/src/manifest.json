@@ -1,17 +1,17 @@
 {
   "$schema": "../../../node_modules/@wako-app/mobile-sdk/dist/manifest-schema.json",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "id": "plugin.kodi-select",
   "name": "Kodi Select",
-  "description": "Allows to select Kodi Host before starting an episode/a movie",
+  "description": "Allows to select Kodi Host before opening an URL on kodi",
   "author": "JohnnyCrazy",
   "actions": [],
   "entryPoint": "/plugin.js",
   "languages": {
-    "en": "/i18n/en.json",
-    "fr": "/i18n/fr.json"
+    "en": "/i18n/en.json"
   },
   "changeLogs": {
-    "0.0.3": "Initial Version"
+    "1.0.0": "Stable version",
+    "0.0.1": "Initial Version"
   }
 }

@@ -1,17 +1,13 @@
 import { Injectable } from '@angular/core';
-import { PluginBaseService } from '@wako-app/mobile-sdk';
-import { TranslateService } from '@ngx-translate/core';
+import { KodiAppService, KodiHostStructure, PluginBaseService } from '@wako-app/mobile-sdk';
 import { logData } from './tools';
-import { KodiAppService } from '@wako-app/mobile-sdk';
-import { defer } from 'rxjs';
-import { AlertController, ModalController, ActionSheetController } from '@ionic/angular';
+import { from, Observable, of } from 'rxjs';
+import { ActionSheetController } from '@ionic/angular';
 import { switchMap } from 'rxjs/operators';
-import { TestHostService } from './kodi.host.service';
-
 
 @Injectable()
 export class PluginService extends PluginBaseService {
-  constructor(protected translate: TranslateService, protected kodi: TestHostService, protected sheet: ActionSheetController) {
+  constructor(protected sheet: ActionSheetController) {
     super();
   }
 
@@ -19,36 +15,64 @@ export class PluginService extends PluginBaseService {
     logData('plugin initialized');
 
     const oldCheckAndConnectToCurrentHost = KodiAppService.checkAndConnectToCurrentHost;
+
     KodiAppService.checkAndConnectToCurrentHost = () => {
-      const test = () => {
-        const prom = new Promise<boolean>(async (resolve, reject) => {
-          const hosts = await this.kodi.getHosts();
-          const p = await this.sheet.create({
-            header: 'Kodi Host',
-            buttons: hosts.map((host) => ({
+      return new Observable<KodiHostStructure>(observer => {
+        KodiAppService.getHosts().then(hosts => {
+          if (hosts.length === 0) {
+            observer.next(null);
+            observer.complete();
+            return;
+          }
+
+          if (hosts.length === 1) {
+            observer.next(hosts[0]);
+            observer.complete();
+            return;
+          }
+
+          const buttons = [];
+          hosts.forEach(host => {
+            buttons.push({
               text: host.name,
-              handler: async () => {
-                this.kodi.setCurrentHost(host);
-                KodiAppService.currentHost = host;
-                await KodiAppService.connect();
-                resolve(true)
-                return true;
+              handler: () => {
+                observer.next(host);
+                observer.complete();
               }
-            }))
+            });
           });
 
-          await p.present();
+          buttons.push({
+            text: 'Cancel',
+            icon: 'close',
+            role: 'cancel',
+            handler: () => {
+              console.log('Cancel clicked');
+            }
+          });
+
+          this.sheet
+            .create({
+              header: 'Select your host',
+              buttons
+            })
+            .then(sheet => {
+              sheet.present();
+            });
         });
-
-
-        return prom
-      }
-
-      return defer(async () => {
-        await test();
-        return oldCheckAndConnectToCurrentHost.apply(this)
-      });
-    }
+      }).pipe(
+        switchMap(host => {
+          if (host) {
+            KodiAppService.disconnect();
+            return from(KodiAppService.setCurrentHost(host));
+          }
+          return of(null);
+        }),
+        switchMap(() => {
+          return oldCheckAndConnectToCurrentHost.apply(KodiAppService) as Observable<boolean>;
+        })
+      );
+    };
   }
 
   afterInstall(): any {
@@ -60,8 +84,9 @@ export class PluginService extends PluginBaseService {
   }
 
   setTranslation(lang: string, translations: any): any {
-    this.translate.setDefaultLang(lang);
-    this.translate.use(lang);
-    this.translate.setTranslation(lang, translations);
+  }
+
+  customAction(action: string, data: any) {
+    throw new Error('Method not implemented.');
   }
 }

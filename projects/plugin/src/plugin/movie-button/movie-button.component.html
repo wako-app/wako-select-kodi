@@ -1,8 +1,0 @@
-<ion-item>
-    <ion-label>Kodi Host</ion-label>
-    <ion-select [(ngModel)]="host" (ionChange)="onChange()" interface="action-sheet">
-      <ion-select-option [value]="host" *ngFor="let host of hosts">
-        {{ host.name }}
-      </ion-select-option>
-    </ion-select>
-  </ion-item>
