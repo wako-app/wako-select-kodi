@@ -6,7 +6,8 @@
   "description": "Allows to select Kodi Host before opening an URL on kodi",
   "author": "JohnnyCrazy",
   "actions": [],
-  "entryPoint": "/plugin.js",
+  "entryPointV2": "/plugin.js",
+  "entryPoint": "https://raw.githubusercontent.com/wako-app/wako-select-kodi/wako3/dist/plugin.js",
   "languages": {
     "en": "/i18n/en.json"
   },
