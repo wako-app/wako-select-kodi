@@ -1,5 +1,17 @@
 import { Injectable } from '@angular/core';
-import { KodiAppService, KodiHostStructure, PluginBaseService } from '@wako-app/mobile-sdk';
+import {
+  KodiAppService,
+  KodiHostStructure,
+  PluginBaseService,
+  Episode,
+  ExplorerFile,
+  ExplorerFolderItem,
+  KodiOpenParams,
+  Movie,
+  OpenMedia,
+  Show,
+  WakoFileActionButton
+} from '@wako-app/mobile-sdk';
 import { logData } from './tools';
 import { from, Observable, of } from 'rxjs';
 import { ActionSheetController } from '@ionic/angular';
@@ -17,8 +29,8 @@ export class PluginService extends PluginBaseService {
     const oldCheckAndConnectToCurrentHost = KodiAppService.checkAndConnectToCurrentHost;
 
     KodiAppService.checkAndConnectToCurrentHost = () => {
-      return new Observable<KodiHostStructure>(observer => {
-        KodiAppService.getHosts().then(hosts => {
+      return new Observable<KodiHostStructure>((observer) => {
+        KodiAppService.getHosts().then((hosts) => {
           if (hosts.length === 0) {
             observer.next(null);
             observer.complete();
@@ -32,7 +44,7 @@ export class PluginService extends PluginBaseService {
           }
 
           const buttons = [];
-          hosts.forEach(host => {
+          hosts.forEach((host) => {
             buttons.push({
               text: host.name,
               handler: () => {
@@ -56,14 +68,13 @@ export class PluginService extends PluginBaseService {
               header: 'Select your host',
               buttons
             })
-            .then(sheet => {
+            .then((sheet) => {
               sheet.present();
             });
         });
       }).pipe(
-        switchMap(host => {
+        switchMap((host) => {
           if (host) {
-            KodiAppService.disconnect();
             return from(KodiAppService.setCurrentHost(host));
           }
           return of(null);
@@ -83,10 +94,46 @@ export class PluginService extends PluginBaseService {
     logData('plugin updated');
   }
 
-  setTranslation(lang: string, translations: any): any {
+  setTranslation(lang: string, translations: any): any {}
+
+  customAction(action: string, data: any): any {}
+
+  beforeMovieMiddleware(movie: Movie): Promise<Movie> {
+    throw new Error('Method not implemented.');
   }
 
-  customAction(action: string, data: any) {
+  afterMovieMiddleware(movie: Movie): Promise<Movie> {
+    throw new Error('Method not implemented.');
+  }
+
+  beforeShowMiddleware(show: Show): Promise<Show> {
+    throw new Error('Method not implemented.');
+  }
+
+  afterShowMiddleware(show: Show): Promise<Show> {
+    throw new Error('Method not implemented.');
+  }
+
+  beforeEpisodeMiddleware(show: Show, episode: Episode): Promise<Episode> {
+    throw new Error('Method not implemented.');
+  }
+
+  afterEpisodeMiddleware(show: Show, episode: Episode): Promise<Episode> {
+    throw new Error('Method not implemented.');
+  }
+
+  fetchExplorerFolderItem(): Promise<ExplorerFolderItem[]> {
+    throw new Error('Method not implemented.');
+  }
+
+  async getFileActionButtons(
+    file: ExplorerFile,
+    title?: string,
+    posterUrl?: string,
+    seekTo?: number,
+    openMedia?: OpenMedia,
+    kodiOpenParams?: KodiOpenParams
+  ): Promise<WakoFileActionButton[]> {
     throw new Error('Method not implemented.');
   }
 }
