@@ -1,12 +1,12 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 
 import { IonicModule } from '@ionic/angular';
 import { PluginService } from './services/plugin.service';
 
-import { PluginBaseModule } from '@wako-app/mobile-sdk';
-import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
+import { PluginBaseModule } from '@wako-app/mobile-sdk';
 
 const components = [];
 
@@ -14,8 +14,8 @@ const components = [];
   imports: [CommonModule, FormsModule, IonicModule.forRoot(), TranslateModule.forRoot()],
   declarations: [...components],
   entryComponents: [...components],
-  providers: [PluginService] // Add your services here. Do not use provideIn: 'root' in your services
+  providers: [PluginService], // Add your services here. Do not use provideIn: 'root' in your services
 })
 export class PluginModule extends PluginBaseModule {
-  static pluginService = PluginService;
+  static override pluginService = PluginService;
 }
